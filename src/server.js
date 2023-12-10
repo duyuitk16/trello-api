@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /**
  * Updated by trungquandev.com's author on August 17 2023
  * YouTube: https://youtube.com/@trungquandev
@@ -5,31 +6,48 @@
  */
 
 import express from 'express'
-import { mapOrder } from '~/utils/sorts.js'
+import exitHook from 'async-exit-hook'
+import { CONNECT_DB, GET_DB, CLOSE_DB } from '~/config/mongodb'
+import { env } from '~/config/environment'
 
-const app = express()
+const START_SERVER = () => {
+  const app = express()
 
-const hostname = 'localhost'
-const port = 8017
+  app.get('/', async (req, res) => {
+    // console.log(await GET_DB().listCollections().toArray())
+    res.end('<h1>Hello World!</h1><hr>')
+  })
 
-app.get('/', (req, res) => {
-  // Test Absolute import mapOrder
-  // eslint-disable-next-line no-console
-  console.log(mapOrder(
-    [
-      { id: 'id-1', name: 'One' },
-      { id: 'id-2', name: 'Two' },
-      { id: 'id-3', name: 'Three' },
-      { id: 'id-4', name: 'Four' },
-      { id: 'id-5', name: 'Five' }
-    ],
-    ['id-5', 'id-4', 'id-2', 'id-3', 'id-1'],
-    'id'
-  ))
-  res.end('<h1>Hello World!</h1><hr>')
-})
+  app.listen(env.APP_PORT, env.APP_HOST, () => {
+    console.log(`3. Hello ${env.AUTHOR}, Server is running at HOST:${env.APP_HOST} and PORT:${env.APP_PORT}`)
+  })
 
-app.listen(port, hostname, () => {
-  // eslint-disable-next-line no-console
-  console.log(`Hello Trung Quan Dev, I am running at http://${hostname}:${port}/`)
-})
+  //Do hệ điều hành WIN nên sẽ log không đúng khi Ctrl + C
+  exitHook(() => {
+    console.log('4. Disconnecting from MongoDB...')
+    CLOSE_DB()
+    console.log('5. Disconnected from MongoDB Cloud Atlas!')
+  })
+}
+
+// Cách viết bằng IIFE (Immediately Invoked Function Expression)
+(async () => {
+  try {
+    console.log('1. Connecting to MongoDB...')
+    await CONNECT_DB()
+    console.log('2. Connected to MongoDB Cloud Atlas!')
+    START_SERVER()
+  } catch (error) {
+    console.error(error)
+    process.exit(0)
+  }
+})()
+
+// console.log('1. Connecting to MongoDB...')
+// CONNECT_DB()
+//   .then(() => console.log('2. Connected to MongoDB Cloud Atlas!'))
+//   .then(() => START_SERVER())
+//   .catch(error => {
+//     console.error(error)
+//     process.exit(0)
+//   })
