@@ -30,9 +30,7 @@ const createNew = async (reqBody) => {
 
     // Trả kết quả về, trong Service luôn phải có return
     return getNewBoard
-  } catch (error) {
-    throw error
-  }
+  } catch (error) { throw error }
 }
 
 const getDetails = async (boardId) => {
@@ -61,9 +59,7 @@ const getDetails = async (boardId) => {
     delete resBoard.cards
 
     return resBoard
-  } catch (error) {
-    throw error
-  }
+  } catch (error) { throw error }
 }
 export const boardService = {
   createNew, getDetails
