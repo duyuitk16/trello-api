@@ -105,6 +105,10 @@ const update = async (boardId, updateData) => {
       if (INVALID_UPDATE_FIELDS.includes(fieldName))
         delete updateData[fieldName]
     })
+
+    // Convert string to ObjectId
+    if (updateData.columnOrderIds) updateData.columnOrderIds = updateData.columnOrderIds.map(_id => new ObjectId(_id))
+
     const result = await GET_DB().collection(BOARD_COLLECTION_NAME).findOneAndUpdate(
       { _id: new ObjectId(boardId) },
       { $set: updateData },
