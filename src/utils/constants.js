@@ -6,7 +6,7 @@
 
 // Những domain được truy cập tài nguyên Server
 export const WHITELIST_DOMAINS = [
-  'http://localhost:5173'
+  // 'http://localhost:5173' Không cần localhost nữa vì ở file cors đã luôn luôn cho phép môi trường dev rồi
   // ...vv ví dụ sau này sẽ deploy lên domain chính thức
 ]
 export const BOARD_TYPES = {
