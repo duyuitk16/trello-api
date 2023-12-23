@@ -29,9 +29,15 @@ const START_SERVER = () => {
   // Middleware xử lý lỗi tập trung
   app.use(errorHandlingMiddleware)
 
-  app.listen(env.APP_PORT, env.APP_HOST, () => {
-    console.log(`3. Hello ${env.AUTHOR}, Server is running at HOST:${env.APP_HOST} and PORT:${env.APP_PORT}`)
-  })
+  if (env.BUILD_MODE === 'production') {
+    app.listen(process.env.PORT, () => {
+      console.log(`3. Production: Hello ${env.AUTHOR}, Server is running at PORT:${process.env.PORT}`)
+    })
+  } else {
+    app.listen(env.LOCAL_DEV_APP_PORT, env.LOCAL_DEV_APP_HOST, () => {
+      console.log(`3. Local DEV: Hello ${env.AUTHOR}, Server is running at HOST:${env.LOCAL_DEV_APP_HOST} and PORT:${env.LOCAL_DEV_APP_PORT}`)
+    })
+  }
 
   //Do hệ điều hành WIN nên sẽ log không đúng khi Ctrl + C
   exitHook(() => {
